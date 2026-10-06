@@ -1,0 +1,86 @@
+{
+  "name": "@arraypress/waveform-sounds-react",
+  "version": "0.1.0",
+  "description": "React component wrapper for @arraypress/waveform-sounds — a searchable, filterable sound list with server-rendered markup the runtime adopts, typed props, callback props and an imperative ref handle.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "react",
+    "react-component",
+    "audio",
+    "waveform",
+    "samples",
+    "sample-pack",
+    "sound-browser",
+    "preview",
+    "presets",
+    "player",
+    "filter",
+    "search"
+  ],
+  "author": "ArrayPress",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/arraypress/waveform-sounds-react.git"
+  },
+  "bugs": {
+    "url": "https://github.com/arraypress/waveform-sounds-react/issues"
+  },
+  "homepage": "https://waveformplayer.com",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/arraypress"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "sideEffects": false,
+  "peerDependencies": {
+    "@arraypress/waveform-player": "^1.24.5",
+    "@arraypress/waveform-sounds": "^0.1.0",
+    "react": "^18.0.0 || ^19.0.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@arraypress/waveform-player": "^1.29.1",
+    "@arraypress/waveform-sounds": "file:../waveform-sounds",
+    "@testing-library/jest-dom": "^7.0.0",
+    "@testing-library/react": "^16.3.2",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "jsdom": "^30.0.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tsup": "^8.5.1",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.10"
+  }
+}
