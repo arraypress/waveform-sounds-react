@@ -22,6 +22,7 @@ assert<Equal<Parameters<WaveformSoundsHandle['setSort']>[0], 'default' | 'title'
 assert<Equal<WaveformSoundsProps['sorts'], ('default' | 'title' | 'bpm' | 'key' | 'duration')[] | undefined>>();
 assert<Equal<WaveformSoundsProps['showCount'], boolean | undefined>>();
 assert<Equal<WaveformSoundsProps['menuSearch'], number | undefined>>();
+assert<Equal<WaveformSoundsProps['idPrefix'], string | undefined>>();
 
 // @ts-expect-error — `sortable` was replaced by `sorts` (`[]` = no sort menu)
 const old: WaveformSoundsProps = { sortable: false };

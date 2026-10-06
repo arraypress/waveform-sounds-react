@@ -46,7 +46,7 @@ Or from a [`waveform-gen`](https://www.npmjs.com/package/@arraypress/waveform-ge
 
 Every `WaveformSoundsOptions` key from the core is a prop, typed from the
 core's own `index.d.ts` — `sounds` / `manifest`, `player`, `search`, `filters`,
-`sorts`, `showCount`, `menuSearch`, `loopToggle`, `maxTypeChips`, `pageSize`, `columns`,
+`sorts`, `showCount`, `menuSearch`, `idPrefix`, `loopToggle`, `maxTypeChips`, `pageSize`, `columns`,
 `waveformStyle`, `waveformColor`, `progressColor`, `barWidth`, `barGap`,
 `loop`, `autoAdvance`, `arrowAudition`, `playerOptions`, `playerClass`,
 `strings` — plus the callbacks `onReady` / `onPlay` / `onPause` / `onEnd` /
@@ -55,6 +55,9 @@ core's own `index.d.ts` — `sounds` / `manifest`, `player`, `search`, `filters`
 - **With `sounds`, the whole list is in the first render** (server HTML
   included); the runtime adopts it on the client instead of rebuilding it.
   With only `manifest`, the list is fetched and built client-side.
+- **Dropdown ids are unique per list and stable across hydration**: the
+  `idPrefix` prop, else the `id` prop, else one from React's `useId()`. Two
+  lists of the same sounds on one page never share ids.
 - **A changed option re-creates the list** (arrays and objects compare by
   value, so inline literals are fine). A changed callback never does.
 - **Live changes without a re-mount** go through the ref.

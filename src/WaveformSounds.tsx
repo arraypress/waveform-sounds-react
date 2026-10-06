@@ -77,6 +77,7 @@
 import {
 	forwardRef,
 	useEffect,
+	useId,
 	useImperativeHandle,
 	useLayoutEffect,
 	useMemo,
@@ -132,6 +133,18 @@ function valueKey(value: unknown): string {
 	return JSON.stringify(value, (_key, v: unknown) => (typeof v === 'function' ? 'ƒ' : v)) ?? 'undefined';
 }
 
+/**
+ * A `useId()` value as an HTML-id-safe prefix. React's ids contain `:`
+ * (18), `«»` (19.0–19.1) or `_` (19.2+); the first two are awkward in CSS
+ * selectors, so keep only `[A-Za-z0-9_-]`.
+ *
+ * @param reactId - The value from `useId()`.
+ * @returns e.g. `ws-r0`.
+ */
+function idPrefixFrom(reactId: string): string {
+	return `ws-${reactId.replace(/[^A-Za-z0-9_-]/g, '')}`;
+}
+
 /** True for a plain `{…}` object (not an array, not null). */
 function isPlainObject(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null && !Array.isArray(value);
@@ -145,9 +158,12 @@ function isPlainObject(value: unknown): value is Record<string, unknown> {
  * that isn't). Callbacks are added separately, as trampolines.
  *
  * @param props - The component's resolved props.
+ * @param idPrefix - The resolved `idPrefix` (the prop, else `id`, else a
+ *   `useId()` one) — always passed, so the server markup and a list the
+ *   runtime builds itself (manifest) use the same ids.
  * @returns An options object for `new WaveformSounds(el, …)`.
  */
-function buildSoundsOptions(props: WaveformSoundsProps): Record<string, unknown> {
+function buildSoundsOptions(props: WaveformSoundsProps, idPrefix: string): Record<string, unknown> {
 	const opts: Record<string, unknown> = {};
 
 	/* Data. `sounds` is forwarded even when its markup is server-rendered
@@ -163,6 +179,7 @@ function buildSoundsOptions(props: WaveformSoundsProps): Record<string, unknown>
 	if (props.sorts !== undefined) opts.sorts = props.sorts;
 	if (props.showCount !== undefined) opts.showCount = props.showCount;
 	if (props.menuSearch !== undefined) opts.menuSearch = props.menuSearch;
+	opts.idPrefix = idPrefix;
 	if (props.loopToggle !== undefined) opts.loopToggle = props.loopToggle;
 	if (props.maxTypeChips !== undefined) opts.maxTypeChips = props.maxTypeChips;
 	if (props.pageSize !== undefined) opts.pageSize = props.pageSize;
@@ -251,6 +268,13 @@ export const WaveformSounds = forwardRef<WaveformSoundsHandle, WaveformSoundsPro
 		const playerOptionsKey = valueKey(props.playerOptions);
 		const layout = props.player === 'strip' ? 'strip' : 'inline';
 
+		/* Dropdown element ids. The core's own fallback is a hash of the
+		 * sounds, so two lists of the same sounds on one page would collide;
+		 * `useId()` is unique per component AND identical on the server and
+		 * the client, so the adopted markup's ids hold through hydration. */
+		const reactId = useId();
+		const idPrefix = props.idPrefix || props.id || idPrefixFrom(reactId);
+
 		/**
 		 * The server-rendered inner markup — the same `renderSounds` the
 		 * runtime would run, with the same render options, so what it adopts
@@ -270,6 +294,7 @@ export const WaveformSounds = forwardRef<WaveformSoundsHandle, WaveformSoundsPro
 							sorts: props.sorts,
 							showCount: props.showCount,
 							menuSearch: props.menuSearch,
+							idPrefix,
 							loopToggle: props.loopToggle,
 							maxTypeChips: props.maxTypeChips,
 							pageSize: props.pageSize,
@@ -286,6 +311,7 @@ export const WaveformSounds = forwardRef<WaveformSoundsHandle, WaveformSoundsPro
 				sortsKey,
 				props.showCount,
 				props.menuSearch,
+				idPrefix,
 				props.loopToggle,
 				props.maxTypeChips,
 				props.pageSize,
@@ -382,7 +408,7 @@ export const WaveformSounds = forwardRef<WaveformSoundsHandle, WaveformSoundsPro
 						opts: Record<string, unknown>
 					) => WaveformSoundsInstance;
 
-					const opts = buildSoundsOptions(props);
+					const opts = buildSoundsOptions(props, idPrefix);
 
 					/* Engine callbacks inside playerOptions → trampolines. */
 					if (isPlainObject(props.playerOptions)) {
@@ -448,6 +474,7 @@ export const WaveformSounds = forwardRef<WaveformSoundsHandle, WaveformSoundsPro
 			sortsKey,
 			props.showCount,
 			props.menuSearch,
+			idPrefix,
 			props.loopToggle,
 			props.maxTypeChips,
 			props.pageSize,

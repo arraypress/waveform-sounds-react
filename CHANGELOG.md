@@ -34,6 +34,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`[]` = no sort menu; the first usable order is the starting one),
   `showCount` and `menuSearch` (core beadf0f — `sortable` is gone), all of
   which shape the server-rendered markup too.
+- `idPrefix` for the dropdowns' element ids (core 7591952), always passed
+  to both the renderer and the runtime: the prop, else the `id` prop, else
+  a sanitised `useId()` — unique per list (the core's own fallback is a
+  hash of the sounds, so two lists of the same sounds would collide) and
+  identical on the server and the client, so the adopted markup hydrates
+  without a mismatch.
 - Re-mount on any option change. `sounds`, `filters`, `sorts`, `columns`,
   `strings` and `playerOptions` compare by value, so inline literals don't re-mount
   on every render. After `destroy()` the wrapper restores the freshly

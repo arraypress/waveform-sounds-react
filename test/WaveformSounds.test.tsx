@@ -101,13 +101,13 @@ const tick = (ms = 50) => new Promise<void>((resolve) => setTimeout(resolve, ms)
 
 describe('<WaveformSounds> — host and markup', () => {
 	it('renders the core renderer\'s markup inside the host, before the runtime loads', () => {
-		const { container } = render(<WaveformSounds sounds={SOUNDS} />);
+		const { container } = render(<WaveformSounds sounds={SOUNDS} idPrefix="p" />);
 		const host = container.firstElementChild as HTMLElement;
 		// Synchronously — no effect / import has run yet.
 		expect(host.querySelectorAll('[data-ws-index]')).toHaveLength(3);
 		expect(host.querySelector('[data-ws-list]')).not.toBeNull();
 		expect(host.querySelector('[data-ws-count]')!.textContent).toBe('3 sounds');
-		expect(host.innerHTML).toBe(normalized(renderSounds(SOUNDS)));
+		expect(host.innerHTML).toBe(normalized(renderSounds(SOUNDS, { idPrefix: 'p' })));
 	});
 
 	it('renders with the same render options it forwards', () => {
@@ -118,6 +118,7 @@ describe('<WaveformSounds> — host and markup', () => {
 			showCount: false,
 			menuSearch: 1,
 			maxTypeChips: 1,
+			idPrefix: 'p',
 		} as const;
 		const columns: ['bpm'] = ['bpm'];
 		const sorts: ['title', 'bpm'] = ['title', 'bpm'];
@@ -224,7 +225,7 @@ describe('<WaveformSounds> — lifecycle', () => {
 		expect(ctorCalls[1].opts.player).toBe('strip');
 	});
 
-	it('does not re-mount for an equal inline literal, className, style or id', async () => {
+	it('does not re-mount for an equal inline literal, className or style', async () => {
 		const { rerender, container } = render(
 			<WaveformSounds
 				sounds={[...SOUNDS]}
@@ -248,7 +249,6 @@ describe('<WaveformSounds> — lifecycle', () => {
 				playerOptions={{ height: 40 }}
 				className="later"
 				style={{ color: 'red' }}
-				id="later"
 			/>
 		);
 		await tick();
@@ -266,6 +266,87 @@ describe('<WaveformSounds> — lifecycle', () => {
 		rerender(<WaveformSounds sounds={SOUNDS} className="b" />);
 		expect(host).toHaveClass('runtime-owned', 'waveform-sounds', 'waveform-sounds--inline', 'b');
 		expect(host).not.toHaveClass('a');
+	});
+});
+
+// ─── Dropdown ids (idPrefix) ─────────────────────────────────────────────
+
+describe('<WaveformSounds> — idPrefix', () => {
+	const menuIds = (root: ParentNode) =>
+		[...root.querySelectorAll('[data-ws-menu] [id]')].map((el) => el.id);
+
+	it('forwards an explicit idPrefix and renders with it', async () => {
+		const { container } = render(<WaveformSounds sounds={SOUNDS} idPrefix="pack" />);
+		expect(menuIds(container).length).toBeGreaterThan(0);
+		expect(menuIds(container).every((id) => id.startsWith('pack-'))).toBe(true);
+		await waitForMount();
+		expect(ctorCalls[0].opts.idPrefix).toBe('pack');
+	});
+
+	it('falls back to the id prop', async () => {
+		const { container } = render(<WaveformSounds sounds={SOUNDS} id="drums" />);
+		expect(menuIds(container).every((id) => id.startsWith('drums-'))).toBe(true);
+		await waitForMount();
+		expect(ctorCalls[0].opts.idPrefix).toBe('drums');
+	});
+
+	it('otherwise uses a sanitised useId(), so two lists of the same sounds never collide', async () => {
+		const { container } = render(
+			<>
+				<WaveformSounds sounds={SOUNDS} />
+				<WaveformSounds sounds={SOUNDS} />
+			</>
+		);
+		const [a, b] = [...container.children];
+		const idsA = menuIds(a);
+		const idsB = menuIds(b);
+		expect(idsA.length).toBeGreaterThan(0);
+		expect(idsA.filter((id) => idsB.includes(id))).toEqual([]);
+		for (const id of [...idsA, ...idsB]) expect(id).toMatch(/^ws-[A-Za-z0-9_-]+-/);
+		await waitForMount(2);
+		expect(ctorCalls.map((c) => c.opts.idPrefix)).toEqual([idsA[0].split('-').slice(0, 2).join('-'), idsB[0].split('-').slice(0, 2).join('-')]);
+	});
+
+	it('the client hydrates the server markup with the same ids, without a mismatch', async () => {
+		const { renderToString } = await import('react-dom/server');
+		const { hydrateRoot } = await import('react-dom/client');
+		const { act } = await import('react');
+		const tree = (
+			<div>
+				<WaveformSounds sounds={SOUNDS} />
+				<WaveformSounds sounds={SOUNDS} />
+			</div>
+		);
+		const container = document.createElement('div');
+		container.innerHTML = renderToString(tree);
+		document.body.appendChild(container);
+		const serverIds = menuIds(container);
+
+		const errors = vi.spyOn(console, 'error').mockImplementation(() => {});
+		const onRecoverableError = vi.fn();
+		let root: ReturnType<typeof hydrateRoot> | undefined;
+		await act(async () => {
+			root = hydrateRoot(container, tree, { onRecoverableError });
+		});
+		await waitForMount(2);
+		expect(onRecoverableError).not.toHaveBeenCalled();
+		expect(errors).not.toHaveBeenCalled();
+		expect(menuIds(container)).toEqual(serverIds);
+		expect(ctorCalls.map((c) => c.opts.idPrefix)).toEqual(
+			[...container.querySelectorAll('[data-ws-menu="sort"]')].map((m) => m.querySelector('[id]')!.id.replace(/-sort.*$/, ''))
+		);
+		errors.mockRestore();
+		await act(async () => root!.unmount());
+		container.remove();
+	});
+
+	it('a changed id re-renders the list with the new ids', async () => {
+		const { rerender, container } = render(<WaveformSounds sounds={SOUNDS} id="a" />);
+		await waitForMount();
+		rerender(<WaveformSounds sounds={SOUNDS} id="b" />);
+		await waitForMount(2);
+		expect(menuIds(container).every((id) => id.startsWith('b-'))).toBe(true);
+		expect(ctorCalls[1].opts.idPrefix).toBe('b');
 	});
 });
 

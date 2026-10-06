@@ -56,6 +56,10 @@ bump the devDependency or the test can't see the new option.
   function values too. The core builds on a microtask AFTER `new` returns
   (since 52f5269), so `instanceRef` is set before `onFilter` / `onReady`
   fire and a handler can use the ref.
+- **`idPrefix` is always resolved and passed** (prop → `id` → sanitised
+  `useId()`) to `renderSounds` AND the constructor. Never derive it from
+  anything that differs between server and client (random, counters):
+  the hydration test in `WaveformSounds.test.tsx` fails if you do.
 - **Host classes**: the host renders `waveform-sounds waveform-sounds--<player>`
   itself, so the core (which only adds classes the host lacks, and only
   removes those on destroy) never touches them; the layout-class swap on a
