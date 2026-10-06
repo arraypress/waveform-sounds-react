@@ -24,7 +24,7 @@ first, then this.
 2. `props.<key>,` (or a `valueKey()` for an array / object) in the mount
    effect's deps array.
 3. If it changes the MARKUP (a `RENDER_DEFAULTS` key in the core's
-   `render.js`), also pass it to `renderSounds` and add it to the `html`
+   `render/options.js`), also pass it to `renderSounds` and add it to the `html`
    memo's deps — or the server rows won't match what the runtime expects.
 
 The props TYPE is free (`extends WaveformSoundsOptions`). `test/forwarding-drift.test.tsx`
