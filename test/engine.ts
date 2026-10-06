@@ -46,8 +46,10 @@ export class FakeEngine {
 
 	seekTo(): void {}
 
-	/** End the current sound, as the core player does. */
+	/** End the current sound as a browser does: the audio element's own
+	 *  `pause` fires first, then `ended`. */
 	end(): void {
+		this.call('onPause', this);
 		this.call('onEnd', this);
 	}
 

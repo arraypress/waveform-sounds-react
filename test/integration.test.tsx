@@ -138,15 +138,23 @@ describe('integration — callbacks fire from the core', () => {
 		fireEvent.click(rows(host)[1].querySelector('.ws-play')!);
 		expect(onPause).toHaveBeenCalledWith(instance.sounds[1], instance);
 
+		// Resume, then let it end naturally (the engine fires pause → ended,
+		// as a browser does): one pause, then one end — no second pause from
+		// the core settling its state (play/pause fire only on a real state
+		// change — core e4bd21f).
+		fireEvent.click(rows(host)[1].querySelector('.ws-play')!);
 		FakeEngine.instances[0].end();
 		expect(onEnd).toHaveBeenCalledWith(instance.sounds[1], instance);
+		expect(onEnd).toHaveBeenCalledTimes(1);
+		expect(onPause).toHaveBeenCalledTimes(2);
+		expect(rows(host)[1]).not.toHaveClass('is-playing');
 
-		// The core turns its playing state off after an end, so a pause follows.
 		expect(events).toEqual([
 			'waveformsounds:play',
 			'waveformsounds:pause',
-			'waveformsounds:end',
+			'waveformsounds:play',
 			'waveformsounds:pause',
+			'waveformsounds:end',
 		]);
 		for (const t of ['play', 'pause', 'end']) document.removeEventListener(`waveformsounds:${t}`, listen);
 	});
