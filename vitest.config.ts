@@ -19,12 +19,6 @@
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-	/* While the core is a `file:../waveform-sounds` devDependency, npm
-	 * symlinks it, Vite follows the link to its real path — outside this
-	 * root — and refuses `option-surface.ts`'s `?raw` read of its
-	 * `index.d.ts`. Allow that one sibling. Harmless (and removable) once
-	 * the devDependency is `^0.1.0` from npm. */
-	server: { fs: { allow: ['.', '../waveform-sounds'] } },
 	test: {
 		include: ['test/**/*.test.{ts,tsx}'],
 		environment: 'jsdom',

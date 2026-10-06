@@ -11,12 +11,7 @@ exposes a `WaveformSoundsHandle` via `ref`.
 - `npm run build` — tsup to `dist/`. `prepublishOnly` runs it. `dist/` is gitignored.
 
 ## ⚠️ The core is a `file:` devDependency until it publishes
-`@arraypress/waveform-sounds` 0.1.0 is not on npm yet, so the devDependency is
-`file:../waveform-sounds` (npm symlinks it). **After the core publishes,
-switch it to `^0.1.0`, `npm install`, and drop the `server.fs.allow` entry in
-`vitest.config.ts`** (it only exists because Vite refuses the `?raw` read of
-the symlinked core's `index.d.ts` outside this root). Publish order: core
-first, then this.
+The core is an ordinary `^0.1.0` devDependency installed from npm. (Until 0.1.0 was published on 2026-10-07 it was a `file:../waveform-sounds` symlink, which needed a Vite `server.fs.allow` exception; both are gone.)
 
 ## The rule that matters: two edits per option, both manual
 `src/WaveformSounds.tsx`. A new core option needs:
