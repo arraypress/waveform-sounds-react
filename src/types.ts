@@ -99,7 +99,7 @@ export interface WaveformSoundsHandle {
  *      `filters`, `sorts`, `showCount`, `menuSearch`, `loopToggle`,
  *      `maxTypeChips`), the row
  *      waveform (`waveformStyle`, colours, `barWidth`, `barGap`),
- *      behaviour (`loop`, `autoAdvance`, `arrowAudition`), the engine
+ *      behaviour (`loop`, `autoAdvance`, `arrowAudition`, `urlState`), the engine
  *      (`playerOptions`, `playerClass`), `strings`, and the callbacks
  *      `onReady` / `onPlay` / `onPause` / `onEnd` / `onFilter` / `onError`.
  *      A changed value option re-creates the instance; a changed callback

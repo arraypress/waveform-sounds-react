@@ -40,6 +40,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   hash of the sounds, so two lists of the same sounds would collide) and
   identical on the server and the client, so the adopted markup hydrates
   without a mismatch.
+- `urlState` (core 8d7db3b): filters and sort kept in the address. A
+  runtime-only option — the server markup is the unfiltered list, and the
+  runtime applies the address on load. Re-mounts on change like the rest.
+- Per-sound `download` links flow through `sounds` into the rendered rows
+  (`SoundInput` is the core's type, so no wrapper change was needed).
 - Re-mount on any option change. `sounds`, `filters`, `sorts`, `columns`,
   `strings` and `playerOptions` compare by value, so inline literals don't re-mount
   on every render. After `destroy()` the wrapper restores the freshly

@@ -20,7 +20,9 @@ A searchable, filterable sound list — server-rendered, then adopted by the run
 npm install @arraypress/waveform-sounds-react @arraypress/waveform-sounds @arraypress/waveform-player react
 ```
 
-Once, at your app entry:
+Once, at your app entry (with the player imported, the core builds its
+engine as soon as the list is ready — no audio is loaded until something
+plays):
 
 ```ts
 import '@arraypress/waveform-player';            // the audio engine (window.WaveformPlayer)
@@ -48,7 +50,7 @@ Every `WaveformSoundsOptions` key from the core is a prop, typed from the
 core's own `index.d.ts` — `sounds` / `manifest`, `player`, `search`, `filters`,
 `sorts`, `showCount`, `menuSearch`, `idPrefix`, `loopToggle`, `maxTypeChips`, `pageSize`, `columns`,
 `waveformStyle`, `waveformColor`, `progressColor`, `barWidth`, `barGap`,
-`loop`, `autoAdvance`, `arrowAudition`, `playerOptions`, `playerClass`,
+`loop`, `autoAdvance`, `arrowAudition`, `urlState`, `playerOptions`, `playerClass`,
 `strings` — plus the callbacks `onReady` / `onPlay` / `onPause` / `onEnd` /
 `onFilter` / `onError`, and `id` / `className` / `style` for the host.
 
@@ -58,6 +60,10 @@ core's own `index.d.ts` — `sounds` / `manifest`, `player`, `search`, `filters`
 - **Dropdown ids are unique per list and stable across hydration**: the
   `idPrefix` prop, else the `id` prop, else one from React's `useId()`. Two
   lists of the same sounds on one page never share ids.
+- **`urlState`** keeps the filters and sort in the address (`?type=Bass&sort=bpm`,
+  or prefixed names with a string) so a filtered list can be shared. The
+  server renders the unfiltered list; the runtime applies the address on load.
+- **Per-sound `download`** (in `sounds`) adds a download link to that row.
 - **A changed option re-creates the list** (arrays and objects compare by
   value, so inline literals are fine). A changed callback never does.
 - **Live changes without a re-mount** go through the ref.

@@ -197,6 +197,9 @@ function buildSoundsOptions(props: WaveformSoundsProps, idPrefix: string): Recor
 	if (props.loop !== undefined) opts.loop = props.loop;
 	if (props.autoAdvance !== undefined) opts.autoAdvance = props.autoAdvance;
 	if (props.arrowAudition !== undefined) opts.arrowAudition = props.arrowAudition;
+	/* Read from / written to the address by the runtime only — the server
+	 * markup is the unfiltered list, which the runtime then filters. */
+	if (props.urlState !== undefined) opts.urlState = props.urlState;
 
 	/* The engine player. `playerOptions` function values are swapped for
 	 * trampolines in the mount effect. */
@@ -488,6 +491,7 @@ export const WaveformSounds = forwardRef<WaveformSoundsHandle, WaveformSoundsPro
 			props.loop,
 			props.autoAdvance,
 			props.arrowAudition,
+			props.urlState,
 			playerOptionsKey,
 			props.playerClass,
 		]);

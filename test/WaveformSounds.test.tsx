@@ -80,7 +80,7 @@ beforeEach(() => {
 const SOUNDS: SoundInput[] = [
 	{ url: '/s/bass-01.mp3', title: 'Bass Loop 01', type: 'Bass', bpm: 128, key: 'Fm', duration: 8 },
 	{ url: '/s/drum-01.mp3', title: 'Drum Loop 01', type: 'Drums', bpm: 140, duration: 4 },
-	{ url: '/s/crash.mp3', title: 'Crash', type: 'One-shots' },
+	{ url: '/s/crash.mp3', title: 'Crash', type: 'One-shots', download: '/dl/crash.wav' },
 ];
 
 /** Markup as the DOM serialises it (`hidden` → `hidden=""`, …). */
@@ -108,6 +108,11 @@ describe('<WaveformSounds> — host and markup', () => {
 		expect(host.querySelector('[data-ws-list]')).not.toBeNull();
 		expect(host.querySelector('[data-ws-count]')!.textContent).toBe('3 sounds');
 		expect(host.innerHTML).toBe(normalized(renderSounds(SOUNDS, { idPrefix: 'p' })));
+		// A per-sound `download` reaches the markup: a link on that row only.
+		const links = host.querySelectorAll<HTMLAnchorElement>('a[download]');
+		expect(links).toHaveLength(1);
+		expect(links[0].closest('[data-ws-index]')).toHaveAttribute('data-title', 'Crash');
+		expect(links[0].getAttribute('href')).toBe('/dl/crash.wav');
 	});
 
 	it('renders with the same render options it forwards', () => {

@@ -107,6 +107,16 @@ describe('integration — mount', () => {
 		expect(String(onError.mock.calls[0][0])).toContain('HTTP 404');
 	});
 
+	it('builds the engine at ready (playerClass given), and reuses it to play', async () => {
+		const { ref } = await mount();
+		await ref.current!.instance!.ready;
+		expect(FakeEngine.instances).toHaveLength(1);
+		expect(FakeEngine.instances[0].loaded).toEqual([]);
+		ref.current!.play(0);
+		expect(FakeEngine.instances).toHaveLength(1);
+		expect(FakeEngine.instances[0].loaded).toEqual(['/s/bass-01.mp3']);
+	});
+
 	it('destroys the instance and its engine on unmount', async () => {
 		const { unmount, host, ref } = await mount();
 		ref.current!.play(0);
@@ -247,6 +257,29 @@ describe('integration — sorts / showCount / menuSearch', () => {
 	it('sorts=[] removes the sort menu', async () => {
 		const { host } = await mount({ sorts: [] });
 		expect(host.querySelector('[data-ws-menu="sort"]')).toBeNull();
+	});
+});
+
+describe('integration — urlState', () => {
+	afterEach(() => window.history.replaceState(null, '', '/'));
+
+	it('reads the filters from the address on load and keeps them in step', async () => {
+		window.history.replaceState(null, '', '/?pack-type=Bass');
+		const { host, ref } = await mount({ urlState: 'pack' });
+		expect(visibleTitles(host)).toEqual(['Bass Loop 01', 'Bass Loop 02']);
+
+		ref.current!.setFilter({ type: 'Drums' });
+		// The core writes the address debounced (~250ms), with replaceState.
+		await waitFor(() => expect(new URLSearchParams(window.location.search).get('pack-type')).toBe('Drums'));
+	});
+
+	it('leaves the address alone without it', async () => {
+		window.history.replaceState(null, '', '/?type=Bass');
+		const { host, ref } = await mount();
+		expect(visibleTitles(host)).toHaveLength(4);
+		ref.current!.setFilter({ type: 'Drums' });
+		await new Promise((r) => setTimeout(r, 350));
+		expect(window.location.search).toBe('?type=Bass');
 	});
 });
 

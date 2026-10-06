@@ -9,7 +9,7 @@
  * take the core's argument types.
  */
 import type { WaveformSoundsOptions } from '@arraypress/waveform-sounds';
-import type { WaveformSoundsHandle, WaveformSoundsProps } from '../src/types';
+import type { SoundInput, WaveformSoundsHandle, WaveformSoundsProps } from '../src/types';
 
 type Equal<A, B> =
 	(<T>() => T extends A ? 1 : 2) extends <T>() => T extends B ? 1 : 2 ? true : false;
@@ -23,6 +23,8 @@ assert<Equal<WaveformSoundsProps['sorts'], ('default' | 'title' | 'bpm' | 'key' 
 assert<Equal<WaveformSoundsProps['showCount'], boolean | undefined>>();
 assert<Equal<WaveformSoundsProps['menuSearch'], number | undefined>>();
 assert<Equal<WaveformSoundsProps['idPrefix'], string | undefined>>();
+assert<Equal<WaveformSoundsProps['urlState'], boolean | string | undefined>>();
+assert<Equal<SoundInput['download'], string | undefined>>();
 
 // @ts-expect-error — `sortable` was replaced by `sorts` (`[]` = no sort menu)
 const old: WaveformSoundsProps = { sortable: false };
