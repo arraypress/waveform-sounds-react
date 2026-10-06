@@ -10,7 +10,7 @@ exposes a `WaveformSoundsHandle` via `ref`.
 - `npm run typecheck` — `tsc --noEmit`, including `test/types.typecheck.ts`.
 - `npm run build` — tsup to `dist/`. `prepublishOnly` runs it. `dist/` is gitignored.
 
-## ⚠️ The core is a `file:` devDependency until it publishes
+## The core is an npm devDependency
 The core is an ordinary `^0.1.0` devDependency installed from npm. (Until 0.1.0 was published on 2026-10-07 it was a `file:../waveform-sounds` symlink, which needed a Vite `server.fs.allow` exception; both are gone.)
 
 ## The rule that matters: two edits per option, both manual
