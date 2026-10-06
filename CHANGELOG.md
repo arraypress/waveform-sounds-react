@@ -15,7 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - First release: `<WaveformSounds />`, a React wrapper for
   `@arraypress/waveform-sounds` 0.1.0 (built against its post-52f5269
   contract: the list builds after the constructor returns, and `destroy()`
-  leaves adopted markup and the host's server-rendered classes alone).
+  leaves adopted markup and the host's server-rendered classes alone; its
+  type / key / sort controls are searchable `[data-ws-menu]` dropdowns).
+- Theming through `style`: the list is colour-agnostic by default; set
+  `--ws-surface` for the server-rendered first paint.
 - Server-rendered markup: with `sounds`, the host's inner HTML is the core's
   own `renderSounds()` output (from the DOM-free `/render` entry), so the
   list is in the first render — SSR included — and the runtime adopts those
@@ -27,9 +30,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Every `WaveformSoundsOptions` key as a prop, typed from the core's
   `index.d.ts`; forwarded through an explicit allowlist with a drift test
   (`test/forwarding-drift.test.tsx`) that fails when the core adds an
-  option the wrapper doesn't forward.
-- Re-mount on any option change. `sounds`, `filters`, `columns`, `strings`
-  and `playerOptions` compare by value, so inline literals don't re-mount
+  option the wrapper doesn't forward. Includes the core's `sorts`
+  (`[]` = no sort menu; the first usable order is the starting one),
+  `showCount` and `menuSearch` (core beadf0f — `sortable` is gone), all of
+  which shape the server-rendered markup too.
+- Re-mount on any option change. `sounds`, `filters`, `sorts`, `columns`,
+  `strings` and `playerOptions` compare by value, so inline literals don't re-mount
   on every render. After `destroy()` the wrapper restores the freshly
   rendered markup, so the new instance never adopts rows carrying the old
   one's sort order, hidden rows, playing state or control values.

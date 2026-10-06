@@ -19,6 +19,13 @@ assert<Equal<Omit<WaveformSoundsProps, 'id' | 'className' | 'style'>, WaveformSo
 assert<Equal<WaveformSoundsProps['player'], 'inline' | 'strip' | undefined>>();
 assert<Equal<WaveformSoundsProps['columns'], ('type' | 'bpm' | 'key' | 'duration')[] | undefined>>();
 assert<Equal<Parameters<WaveformSoundsHandle['setSort']>[0], 'default' | 'title' | 'bpm' | 'key' | 'duration'>>();
+assert<Equal<WaveformSoundsProps['sorts'], ('default' | 'title' | 'bpm' | 'key' | 'duration')[] | undefined>>();
+assert<Equal<WaveformSoundsProps['showCount'], boolean | undefined>>();
+assert<Equal<WaveformSoundsProps['menuSearch'], number | undefined>>();
+
+// @ts-expect-error — `sortable` was replaced by `sorts` (`[]` = no sort menu)
+const old: WaveformSoundsProps = { sortable: false };
+void old;
 
 // @ts-expect-error — not a layout the core has
 const bad: WaveformSoundsProps = { player: 'grid' };

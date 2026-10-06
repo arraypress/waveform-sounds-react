@@ -96,7 +96,8 @@ export interface WaveformSoundsHandle {
  *   1. **Every core option** — inherited from {@link WaveformSoundsOptions}
  *      unchanged: the data (`sounds`, or `manifest`), the layout
  *      (`player`, `columns`, `pageSize`, …), the toolbar (`search`,
- *      `filters`, `sortable`, `loopToggle`, `maxTypeChips`), the row
+ *      `filters`, `sorts`, `showCount`, `menuSearch`, `loopToggle`,
+ *      `maxTypeChips`), the row
  *      waveform (`waveformStyle`, colours, `barWidth`, `barGap`),
  *      behaviour (`loop`, `autoAdvance`, `arrowAudition`), the engine
  *      (`playerOptions`, `playerClass`), `strings`, and the callbacks
@@ -123,7 +124,9 @@ export interface WaveformSoundsProps extends WaveformSoundsOptions {
 	className?: string;
 	/**
 	 * Inline style for the host — e.g. the `--ws-*` theming custom
-	 * properties (`{ '--ws-accent': '#d1fe17' }`).
+	 * properties. The list is colour-agnostic by default; for server
+	 * rendering set `--ws-surface` (the page background) so the first paint
+	 * is right before the runtime detects it: `{ '--ws-surface': '#0a0a0a' }`.
 	 */
 	style?: CSSProperties;
 }

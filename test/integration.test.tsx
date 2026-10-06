@@ -199,6 +199,7 @@ describe('integration — ref handle drives the live instance', () => {
 
 		h.setSort('bpm');
 		expect(visibleTitles(host)).toEqual(['Bass Loop 02', 'Bass Loop 01']);
+		expect(host.querySelector('[data-ws-menu="sort"] [data-ws-menu-value]')!.textContent).toBe('BPM');
 
 		h.clearFilters();
 		expect(h.instance!.filter.type).toBe('');
@@ -228,6 +229,24 @@ describe('integration — ref handle drives the live instance', () => {
 		h.setLoop(true);
 		expect(engine.audio.loop).toBe(true);
 		expect(host.querySelector('[data-ws-loop]')).toHaveAttribute('aria-pressed', 'true');
+	});
+});
+
+describe('integration — sorts / showCount / menuSearch', () => {
+	it('sorts sets the menu\'s orders and the starting order; showCount=false drops the count', async () => {
+		const { host, ref } = await mount({ sorts: ['bpm', 'title'], showCount: false });
+		const options = [...host.querySelectorAll('[data-ws-menu="sort"] [role=option]')].map((o) =>
+			o.getAttribute('data-value')
+		);
+		expect(options).toEqual(['bpm', 'title']);
+		expect(ref.current!.instance!.sortBy).toBe('bpm');
+		expect(visibleTitles(host)).toEqual(['Bass Loop 02', 'Bass Loop 01', 'Drum Loop 01', 'Crash']);
+		expect(host.querySelector('[data-ws-count]')).toBeNull();
+	});
+
+	it('sorts=[] removes the sort menu', async () => {
+		const { host } = await mount({ sorts: [] });
+		expect(host.querySelector('[data-ws-menu="sort"]')).toBeNull();
 	});
 });
 
@@ -264,7 +283,9 @@ describe('integration — re-mount', () => {
 
 		expect(visibleTitles(host)).toEqual(SOUNDS.map((s) => s.title));
 		expect(host.querySelector<HTMLInputElement>('[data-ws-search]')!.value).toBe('');
-		expect(host.querySelector<HTMLSelectElement>('[data-ws-sort]')!.value).toBe('default');
+		const sortMenu = host.querySelector('[data-ws-menu="sort"]')!;
+		expect(sortMenu.querySelector('[data-ws-menu-value]')!.textContent).toBe('Default');
+		expect(sortMenu.querySelector('[role=option][aria-selected="true"]')).toHaveAttribute('data-value', 'default');
 		expect(host.querySelector('.is-playing, .is-current')).toBeNull();
 		expect(ref.current!.instance!.options.autoAdvance).toBe(true);
 	});

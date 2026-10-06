@@ -30,7 +30,7 @@
  * Like the family's other React wrappers, this re-creates the instance
  * when any construction-time option changes rather than diffing options
  * against the live instance. Arrays / objects (`sounds`, `filters`,
- * `columns`, `strings`, `playerOptions`) are compared by their serialised
+ * `sorts`, `columns`, `strings`, `playerOptions`) are compared by their serialised
  * value, so an inline literal does NOT re-mount on every parent render.
  * For live changes without a re-mount use the ref handle (`setLoop`,
  * `setFilter`, `setSort`, …).
@@ -160,7 +160,9 @@ function buildSoundsOptions(props: WaveformSoundsProps): Record<string, unknown>
 	if (props.player !== undefined) opts.player = props.player;
 	if (props.search !== undefined) opts.search = props.search;
 	if (props.filters !== undefined) opts.filters = props.filters;
-	if (props.sortable !== undefined) opts.sortable = props.sortable;
+	if (props.sorts !== undefined) opts.sorts = props.sorts;
+	if (props.showCount !== undefined) opts.showCount = props.showCount;
+	if (props.menuSearch !== undefined) opts.menuSearch = props.menuSearch;
 	if (props.loopToggle !== undefined) opts.loopToggle = props.loopToggle;
 	if (props.maxTypeChips !== undefined) opts.maxTypeChips = props.maxTypeChips;
 	if (props.pageSize !== undefined) opts.pageSize = props.pageSize;
@@ -243,6 +245,7 @@ export const WaveformSounds = forwardRef<WaveformSoundsHandle, WaveformSoundsPro
 		 * literal re-mounts only when its contents change. */
 		const soundsKey = valueKey(props.sounds);
 		const filtersKey = valueKey(props.filters);
+		const sortsKey = valueKey(props.sorts);
 		const columnsKey = valueKey(props.columns);
 		const stringsKey = valueKey(props.strings);
 		const playerOptionsKey = valueKey(props.playerOptions);
@@ -264,7 +267,9 @@ export const WaveformSounds = forwardRef<WaveformSoundsHandle, WaveformSoundsPro
 							player: props.player,
 							search: props.search,
 							filters: props.filters,
-							sortable: props.sortable,
+							sorts: props.sorts,
+							showCount: props.showCount,
+							menuSearch: props.menuSearch,
 							loopToggle: props.loopToggle,
 							maxTypeChips: props.maxTypeChips,
 							pageSize: props.pageSize,
@@ -278,7 +283,9 @@ export const WaveformSounds = forwardRef<WaveformSoundsHandle, WaveformSoundsPro
 				props.player,
 				props.search,
 				filtersKey,
-				props.sortable,
+				sortsKey,
+				props.showCount,
+				props.menuSearch,
 				props.loopToggle,
 				props.maxTypeChips,
 				props.pageSize,
@@ -438,7 +445,9 @@ export const WaveformSounds = forwardRef<WaveformSoundsHandle, WaveformSoundsPro
 			props.player,
 			props.search,
 			filtersKey,
-			props.sortable,
+			sortsKey,
+			props.showCount,
+			props.menuSearch,
 			props.loopToggle,
 			props.maxTypeChips,
 			props.pageSize,

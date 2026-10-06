@@ -46,7 +46,8 @@ export function ManifestExample() {
 	return <WaveformSounds manifest="/sounds.json" pageSize={100} />;
 }
 
-/* Example 3 — The docked "strip" player, fewer controls, translated strings */
+/* Example 3 — The docked "strip" player, fewer controls (Name/BPM sort only,
+ * no count), translated strings */
 export function StripExample() {
 	return (
 		<WaveformSounds
@@ -54,6 +55,8 @@ export function StripExample() {
 			player="strip"
 			filters={['type']}
 			columns={['bpm', 'duration']}
+			sorts={['title', 'bpm']}
+			showCount={false}
 			loopToggle={false}
 			strings={{ count: '{count} geluiden', searchPlaceholder: 'Zoek geluiden…' }}
 			playerOptions={{ height: 56, waveformStyle: 'bars' }}

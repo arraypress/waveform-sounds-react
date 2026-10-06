@@ -111,9 +111,23 @@ describe('<WaveformSounds> — host and markup', () => {
 	});
 
 	it('renders with the same render options it forwards', () => {
-		const opts = { player: 'strip', search: false, columns: ['bpm'], pageSize: 2 } as const;
-		const { container } = render(<WaveformSounds sounds={SOUNDS} {...opts} columns={['bpm']} />);
-		expect(container.firstElementChild!.innerHTML).toBe(normalized(renderSounds(SOUNDS, { ...opts, columns: ['bpm'] })));
+		const opts = {
+			player: 'strip',
+			search: false,
+			pageSize: 2,
+			showCount: false,
+			menuSearch: 1,
+			maxTypeChips: 1,
+		} as const;
+		const columns: ['bpm'] = ['bpm'];
+		const sorts: ['title', 'bpm'] = ['title', 'bpm'];
+		const { container } = render(<WaveformSounds sounds={SOUNDS} {...opts} columns={columns} sorts={sorts} />);
+		expect(container.firstElementChild!.innerHTML).toBe(
+			normalized(renderSounds(SOUNDS, { ...opts, columns, sorts }))
+		);
+		// …and they really shaped it (not just both defaults).
+		expect(container.querySelector('[data-ws-count]')).toBeNull();
+		expect(container.querySelector('[data-ws-menu="type"]')).not.toBeNull();
 	});
 
 	it('applies the component classes (styled before hydration) plus className / id / style', () => {
@@ -215,6 +229,7 @@ describe('<WaveformSounds> — lifecycle', () => {
 			<WaveformSounds
 				sounds={[...SOUNDS]}
 				filters={['type']}
+				sorts={['title', 'bpm']}
 				columns={['bpm', 'key']}
 				strings={{ count: '{count} geluiden' }}
 				playerOptions={{ height: 40 }}
@@ -227,6 +242,7 @@ describe('<WaveformSounds> — lifecycle', () => {
 			<WaveformSounds
 				sounds={[...SOUNDS]}
 				filters={['type']}
+				sorts={['title', 'bpm']}
 				columns={['bpm', 'key']}
 				strings={{ count: '{count} geluiden' }}
 				playerOptions={{ height: 40 }}

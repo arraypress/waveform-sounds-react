@@ -46,7 +46,7 @@ Or from a [`waveform-gen`](https://www.npmjs.com/package/@arraypress/waveform-ge
 
 Every `WaveformSoundsOptions` key from the core is a prop, typed from the
 core's own `index.d.ts` — `sounds` / `manifest`, `player`, `search`, `filters`,
-`sortable`, `loopToggle`, `maxTypeChips`, `pageSize`, `columns`,
+`sorts`, `showCount`, `menuSearch`, `loopToggle`, `maxTypeChips`, `pageSize`, `columns`,
 `waveformStyle`, `waveformColor`, `progressColor`, `barWidth`, `barGap`,
 `loop`, `autoAdvance`, `arrowAudition`, `playerOptions`, `playerClass`,
 `strings` — plus the callbacks `onReady` / `onPlay` / `onPause` / `onEnd` /
@@ -58,6 +58,20 @@ core's own `index.d.ts` — `sounds` / `manifest`, `player`, `search`, `filters`
 - **A changed option re-creates the list** (arrays and objects compare by
   value, so inline literals are fine). A changed callback never does.
 - **Live changes without a re-mount** go through the ref.
+
+## Theming
+
+Colour-agnostic by default — everything derives from `currentColor`, so it
+fits light and dark pages with no setup. For server-rendered pages set
+`--ws-surface` (the page background, otherwise detected at runtime) so the
+first paint is right:
+
+```tsx
+<WaveformSounds sounds={sounds} style={{ '--ws-surface': '#0a0a0a' } as React.CSSProperties} />
+```
+
+`--ws-accent` / `--ws-on-accent` opt into a brand colour; the rest of the
+`--ws-*` properties are listed in the core's README.
 
 ## Ref
 
