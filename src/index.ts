@@ -36,6 +36,7 @@
  *   SoundsSort,
  *   SoundsLayout,
  *   SoundsFilterControl,
+ *   SoundsLoopFilter,
  *   SoundsColumn,
  * } from '@arraypress/waveform-sounds-react';
  * ```
@@ -57,5 +58,6 @@ export type {
 	SoundsSort,
 	SoundsLayout,
 	SoundsFilterControl,
+	SoundsLoopFilter,
 	SoundsColumn,
 } from './types';

@@ -1,6 +1,6 @@
 {
   "name": "@arraypress/waveform-sounds-react",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React component wrapper for @arraypress/waveform-sounds — a searchable, filterable sound list with server-rendered markup the runtime adopts, typed props, callback props and an imperative ref handle.",
   "type": "module",
   "main": "./dist/index.cjs",
@@ -58,7 +58,7 @@
   "sideEffects": false,
   "peerDependencies": {
     "@arraypress/waveform-player": "^1.24.5",
-    "@arraypress/waveform-sounds": "^0.1.0",
+    "@arraypress/waveform-sounds": "^0.2.0",
     "react": "^18.0.0 || ^19.0.0"
   },
   "scripts": {
@@ -71,7 +71,7 @@
   },
   "devDependencies": {
     "@arraypress/waveform-player": "^1.29.1",
-    "@arraypress/waveform-sounds": "^0.1.0",
+    "@arraypress/waveform-sounds": "^0.2.0",
     "@testing-library/jest-dom": "^7.0.0",
     "@testing-library/react": "^16.3.2",
     "@types/react": "^19.2.18",

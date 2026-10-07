@@ -42,6 +42,7 @@ export type {
 	SoundsSort,
 	SoundsLayout,
 	SoundsFilterControl,
+	SoundsLoopFilter,
 	SoundsColumn,
 } from '@arraypress/waveform-sounds';
 
